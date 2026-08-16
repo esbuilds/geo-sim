@@ -64,3 +64,12 @@ the change.
   end of a run, so a crash mid-run doesn't lose finished trials.
 - Temperature is never set to 0. Repeated trials exist to capture sampling
   variance; a deterministic model makes repetition meaningless.
+- **Citation elicitation is forced choice.** The prompt offers `1`, `2`, and
+  `neither`, but not `both`. Preference is only measurable when the model commits
+  to one source; offering `both` got it in 6/10 live trials and discarded 60% of
+  paid trials as indecisive (2026-08-16). `neither` stays as a real no-signal
+  option. `parseCitation` still accepts a `both` tag so older runs stay readable
+  and an unprompted `both` isn't silently miscounted.
+- This narrows the construct to *relative* preference between two sources. It
+  does not measure whether a single document is independently sufficient, and it
+  does not touch retrieval (see section 2).

@@ -4,6 +4,15 @@ Everything except the actual LLM API calls is already verified (43 automated tes
 plus the real CLI + SQLite report pipeline). The only thing left is confirming the
 three providers' live `runTrial` HTTP round-trips. Do this when you have keys.
 
+**Anthropic: verified 2026-08-16.** Steps 1 and 2 pass end to end (run
+`1fc821d5`, `A=10 B=0 both=0 neither=0 errors=0`, p=0.002, `winner=A`, A favored
+under both AB and BA order). OpenAI and Google round-trips are still unconfirmed.
+
+An earlier run of step 2 that same day (`dadaf26e`) returned `both` on 6 of 10
+trials and therefore `ns`. That was the prompt offering a `both` option, not a
+statistics bug; the instructions are now forced choice. If a scenario ever comes
+back mostly `both` again, look at the framing before buying more trials.
+
 ## Setup
 
 ```bash
