@@ -91,8 +91,21 @@ until a scenario's plumbing is proven.
 
 ## Things to sanity-check while testing
 
-- Freshness/price/relevance scenarios should show a clear winner; the **position**
-  scenario should NOT (it's the harness's own bias check — a strong result there
-  means the AB/BA counterbalancing isn't neutralizing order).
+- Freshness/price/relevance scenarios should show a clear winner. For the
+  **position** scenario, read the `position:` line, not the variant line.
+  Both variants say the same thing, so `doc1` should land near 50%; a
+  `POSITION BIAS` flag there means the model is choosing by slot rather than
+  by content.
+
+  Do **not** judge the position scenario by "no variant winner" — that was the
+  original check here and it cannot work. The AB/BA swap cancels position bias
+  exactly, so a model with no position preference and a model that always cites
+  document 1 both produce A ≈ B. Measured 2026-08-16 on `claude-sonnet-5`
+  (run `dd37c021`): `doc1=59 doc2=1`, near-total position bias, while the
+  variant line read `p=0.897 ns` — the old check would have called that a pass.
+
+- On a real scenario, a significant variant winner is only a content effect if
+  it wins under **both** orders. Run `1fc821d5` (freshness, `claude-opus-4-8`)
+  is the good case: `winner=A` with `doc1=5 doc2=5`, so A won from either slot.
 - Errored trials (rate limits, etc.) are stored with an `error` and excluded from
   the stats, not counted as `neither`.

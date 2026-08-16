@@ -22,6 +22,36 @@ export interface ProviderAnalysis {
   significant: boolean;
   /** Significant winner, or null if no significant preference / no decisive trials. */
   winner: 'A' | 'B' | null;
+  /**
+   * Which *slot* got cited, ignoring which variant sat there.
+   *
+   * The variant-level stats above cannot see position bias: the AB/BA swap
+   * cancels it exactly, so a model that always cites document 1 and a model
+   * with no position preference both produce A ≈ B. Distinguishing them needs
+   * this second aggregation. Observed on claude-sonnet-5 (run dd37c021):
+   * document 1 won 59/60 on two equal-quality paraphrases while the
+   * variant-level test read p=0.897, ns.
+   */
+  position: PositionAnalysis;
+}
+
+export interface PositionAnalysis {
+  /** Decisive trials where the cited variant was injected first. */
+  doc1: number;
+  /** Decisive trials where the cited variant was injected second. */
+  doc2: number;
+  /** Proportion of decisive trials citing document 1. NaN if none. */
+  proportionDoc1: number;
+  wilson: { lower: number; upper: number };
+  /** Two-sided exact binomial p-value against a 50/50 null. */
+  pValue: number;
+  /**
+   * True when slot choice departs significantly from chance — i.e. the model
+   * is picking by position, not content. On a controlled equal-content
+   * scenario this is the finding; on a real scenario it means content and
+   * position are entangled and the variant result needs care.
+   */
+  biased: boolean;
 }
 
 export interface AnalysisResult {
@@ -68,16 +98,38 @@ function binomialTwoSidedP(x: number, n: number): number {
   return Math.min(1, 2 * tail);
 }
 
+/** True when the cited variant occupied document slot 1 for this trial's order. */
+function citedFirstSlot(order: Trial['positionOrder'], cited: 'A' | 'B'): boolean {
+  return order === 'AB' ? cited === 'A' : cited === 'B';
+}
+
 function analyzeProvider(provider: string, trials: Trial[]): ProviderAnalysis {
   const counts = { A: 0, B: 0, both: 0, neither: 0 };
   let errors = 0;
+  let doc1 = 0;
+  let doc2 = 0;
   for (const t of trials) {
     if (t.error !== undefined) {
       errors += 1;
       continue;
     }
     counts[t.citedVariant] += 1;
+    if (t.citedVariant === 'A' || t.citedVariant === 'B') {
+      if (citedFirstSlot(t.positionOrder, t.citedVariant)) doc1 += 1;
+      else doc2 += 1;
+    }
   }
+
+  const slots = doc1 + doc2;
+  const positionP = binomialTwoSidedP(doc1, slots);
+  const position: PositionAnalysis = {
+    doc1,
+    doc2,
+    proportionDoc1: slots === 0 ? NaN : doc1 / slots,
+    wilson: wilson(doc1, slots),
+    pValue: positionP,
+    biased: slots > 0 && positionP < ALPHA,
+  };
 
   const decisive = counts.A + counts.B;
   const proportionA = decisive === 0 ? NaN : counts.A / decisive;
@@ -99,6 +151,7 @@ function analyzeProvider(provider: string, trials: Trial[]): ProviderAnalysis {
     pValue,
     significant,
     winner,
+    position,
   };
 }
 

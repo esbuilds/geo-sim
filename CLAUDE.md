@@ -73,3 +73,15 @@ the change.
 - This narrows the construct to *relative* preference between two sources. It
   does not measure whether a single document is independently sufficient, and it
   does not touch retrieval (see section 2).
+- **Every analysis reports by variant AND by position slot.** The variant
+  aggregation alone cannot detect position bias: AB/BA counterbalancing cancels
+  it exactly, so "no position preference" and "always cites document 1" both
+  come out as A ≈ B. `PositionAnalysis` re-aggregates decisive trials by which
+  slot was cited and flags `biased` when that departs from 50/50. Keep both on
+  every user-facing surface; a variant result is only a content effect if the
+  winner also wins under both orders.
+- **Runs are model-scoped.** `--model` overrides the model for a run and every
+  trial records the model that produced it. Do not pool trials across models:
+  position bias in particular is model-specific (`claude-sonnet-5` cited
+  document 1 in 59/60 equal-content trials; `claude-opus-4-8` showed no
+  detectable effect at n=10).

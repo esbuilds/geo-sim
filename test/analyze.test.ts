@@ -90,3 +90,72 @@ describe('analyze', () => {
     expect(Number.isNaN(p.proportionA)).toBe(true);
   });
 });
+
+describe('position analysis', () => {
+  /** One trial per (order, citedVariant) pair, repeated n times. */
+  function trial(
+    positionOrder: 'AB' | 'BA',
+    citedVariant: CitedVariant,
+    n: number,
+  ): Trial[] {
+    return Array.from({ length: n }, () => ({
+      scenarioId: 's1',
+      provider: 'p',
+      model: 'test-model',
+      positionOrder,
+      rawResponse: '',
+      citedVariant,
+      timestamp: '2026-01-01T00:00:00.000Z',
+    }));
+  }
+
+  test('total position bias is invisible to the variant test but caught here', () => {
+    // The shape observed on claude-sonnet-5 (run dd37c021): document 1 always
+    // wins, so counterbalancing makes A and B come out even.
+    const trials = [
+      ...trial('AB', 'A', 30), // A is doc 1
+      ...trial('BA', 'B', 30), // B is doc 1
+    ];
+    const [p] = analyze(trials).byProvider;
+
+    // Variant level sees a perfect coin flip and reports nothing.
+    expect(p.counts).toMatchObject({ A: 30, B: 30 });
+    expect(p.significant).toBe(false);
+    expect(p.winner).toBeNull();
+
+    // Position level sees the truth.
+    expect(p.position).toMatchObject({ doc1: 60, doc2: 0, biased: true });
+    expect(p.position.proportionDoc1).toBe(1);
+  });
+
+  test('a real content effect wins from both slots and flags no position bias', () => {
+    // The freshness shape (run 1fc821d5): A wins whether it is first or second.
+    const trials = [
+      ...trial('AB', 'A', 5), // A first, A cited  -> doc 1
+      ...trial('BA', 'A', 5), // A second, A cited -> doc 2
+    ];
+    const [p] = analyze(trials).byProvider;
+
+    expect(p.winner).toBe('A');
+    expect(p.significant).toBe(true);
+    expect(p.position).toMatchObject({ doc1: 5, doc2: 5, biased: false });
+  });
+
+  test('both/neither trials are excluded from the position counts', () => {
+    const trials = [
+      ...trial('AB', 'A', 3),
+      ...trial('AB', 'both', 4),
+      ...trial('BA', 'neither', 2),
+    ];
+    const [p] = analyze(trials).byProvider;
+    expect(p.position).toMatchObject({ doc1: 3, doc2: 0 });
+  });
+
+  test('no decisive trials leaves position stats undefined rather than 0/0', () => {
+    const [p] = analyze(make('p', { both: 4 })).byProvider;
+    expect(p.position.doc1).toBe(0);
+    expect(p.position.doc2).toBe(0);
+    expect(Number.isNaN(p.position.proportionDoc1)).toBe(true);
+    expect(p.position.biased).toBe(false);
+  });
+});

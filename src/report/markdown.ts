@@ -55,6 +55,29 @@ export function renderMarkdown(
     );
   }
 
+  lines.push('\n## Position check');
+  lines.push(
+    'Which document *slot* got cited, ignoring which variant sat there. The variant table above cannot show this: the AB/BA swap cancels position bias exactly, so a model that always cites document 1 and a model with no position preference both produce A ≈ B.',
+  );
+  lines.push(
+    '\n| Provider | doc 1 | doc 2 | cited first | 95% CI | p | Position bias |',
+  );
+  lines.push('| --- | --- | --- | --- | --- | --- | --- |');
+  for (const p of result.byProvider) {
+    const pos = p.position;
+    const ci = Number.isNaN(pos.wilson.lower)
+      ? 'n/a'
+      : `[${pct(pos.wilson.lower)}, ${pct(pos.wilson.upper)}]`;
+    lines.push(
+      `| ${p.provider} | ${pos.doc1} | ${pos.doc2} | ${pct(pos.proportionDoc1)} | ${ci} | ${pos.pValue.toFixed(3)} | ${pos.biased ? '**yes**' : 'no'} |`,
+    );
+  }
+  if (result.byProvider.some((p) => p.position.biased)) {
+    lines.push(
+      '\n> **Position bias detected.** At least one provider cited by slot rather than by content. On an equal-content control scenario that is the intended finding. On a real scenario, treat the variant result as entangled with position: check that the winning variant wins under *both* AB and BA before reading it as a content effect.',
+    );
+  }
+
   lines.push(`\n**Cross-provider agreement:** ${result.crossProvider.note}`);
   lines.push(`\n---\n\n> **Disclaimer.** ${DISCLAIMER}`);
   return `${lines.join('\n')}\n`;

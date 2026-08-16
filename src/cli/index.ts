@@ -59,6 +59,17 @@ function printAnalysis(result: AnalysisResult): void {
         `A favored ${pct} 95%CI ${ci} p=${p.pValue.toFixed(3)} ` +
         `${p.significant ? 'SIGNIFICANT' : 'ns'} winner=${p.winner ?? '-'}`,
     );
+    // Printed on every run, not just the position scenario: the variant line
+    // above cannot distinguish "no position bias" from "total position bias".
+    const { doc1, doc2, proportionDoc1 } = p.position;
+    const posPct = Number.isNaN(proportionDoc1)
+      ? 'n/a'
+      : `${(proportionDoc1 * 100).toFixed(1)}%`;
+    console.log(
+      `${' '.repeat(p.provider.length)}  position: doc1=${doc1} doc2=${doc2} ` +
+        `(${posPct} first) p=${p.position.pValue.toFixed(3)} ` +
+        `${p.position.biased ? 'POSITION BIAS' : 'no position effect'}`,
+    );
   }
   console.log(`\nCross-provider: ${result.crossProvider.note}`);
 }
