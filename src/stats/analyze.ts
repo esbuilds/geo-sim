@@ -78,7 +78,12 @@ function wilson(x: number, n: number): { lower: number; upper: number } {
   const denom = 1 + z2 / n;
   const center = (p + z2 / (2 * n)) / denom;
   const half = (Z / denom) * Math.sqrt((p * (1 - p)) / n + z2 / (4 * n * n));
-  return { lower: center - half, upper: center + half };
+  // Clamp to [0,1]: at x=0 or x=n the interval can round just past the bounds
+  // and print as "-0.0%", which reads as a bug in a published report.
+  return {
+    lower: Math.max(0, center - half),
+    upper: Math.min(1, center + half),
+  };
 }
 
 /**

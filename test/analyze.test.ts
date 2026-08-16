@@ -159,3 +159,16 @@ describe('position analysis', () => {
     expect(p.position.biased).toBe(false);
   });
 });
+
+describe('wilson interval bounds', () => {
+  test('unanimous results stay inside [0, 1]', () => {
+    const allB = analyze(make('p', { B: 60 })).byProvider[0];
+    expect(allB.wilson.lower).toBeGreaterThanOrEqual(0);
+    expect(allB.wilson.upper).toBeLessThanOrEqual(1);
+    expect(Object.is(allB.wilson.lower, -0)).toBe(false);
+
+    const allA = analyze(make('p', { A: 60 })).byProvider[0];
+    expect(allA.wilson.upper).toBeLessThanOrEqual(1);
+    expect(allA.wilson.lower).toBeGreaterThanOrEqual(0);
+  });
+});

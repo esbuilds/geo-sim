@@ -1,0 +1,16 @@
+{
+  "id": "specificity-medspa-irvine",
+  "factor": "specificity",
+  "query": "I'm looking for skin tightening at a med spa in Irvine. What does this clinic offer and what should I expect?",
+  "notes": "Tests Finding 4 of the OC med spa AI-visibility study (2026-07-26): Google AI Mode quoted named devices, named practitioners, and exact prices from the businesses it cited, while unmentioned businesses published generic benefit copy. That study observed the correlation; this scenario tests whether specificity actually causes the citation preference. Both variants describe the SAME fictional clinic offering the SAME services, matched in length (~120 words) so the test isn't confounded by one document simply being longer or offering more. Only the level of concrete, quotable detail differs. Variant A's phrasing pattern is drawn from real Irvine med spa pages (e.g. skinsationoc.com: 'Advanced technology for skin resurfacing and renewal'). The clinic name, practitioner, devices and prices are invented rather than taken from a real named business, so the test asserts no false facts about anyone real.",
+  "variantA": {
+    "id": "generic",
+    "label": "Generic benefit copy (the pattern on unmentioned pages)",
+    "text": "Coastline Aesthetics — Skin Tightening in Irvine\n\nAt Coastline Aesthetics, we believe your skin deserves expert care. Our skin tightening treatments use advanced technology to help restore firmness and renew your natural glow. Every treatment plan is personalized to your concerns by our experienced, highly trained team.\n\nWe offer a comprehensive range of non-surgical skin tightening options designed to deliver natural-looking results with minimal downtime. Whether you're addressing loose skin, fine lines, or overall texture and tone, our providers will build a customized approach with you.\n\nOur state-of-the-art facility combines innovative solutions with a warm, welcoming environment. Consultations are available to discuss your goals and find the right treatment. Book today and start your journey to radiant skin."
+  },
+  "variantB": {
+    "id": "specific",
+    "label": "Same services, concrete quotable detail",
+    "text": "Coastline Aesthetics — Skin Tightening in Irvine\n\nCoastline Aesthetics offers three non-surgical skin tightening treatments. Sofwave uses ultrasound energy to lift mid-face and brow laxity in a single 30-45 minute session, with no downtime. Morpheus8 combines microneedling with radiofrequency at depths up to 4mm, best for jawline and neck laxity; most patients book three sessions spaced four weeks apart. Thermage FLX treats broader areas of loose skin in one session.\n\nTreatments are performed by Nurse Practitioner Dana Reyes, RN, MSN, who has 11 years in medical aesthetics.\n\nConsultations are flat-rated at $100, credited toward treatment. Sofwave starts at $1,800 per session; Morpheus8 is $900 per session or $2,400 for the three-session package. Results typically appear over 8-12 weeks as collagen remodels."
+  }
+}

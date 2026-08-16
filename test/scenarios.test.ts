@@ -4,9 +4,15 @@ import { loadExampleScenarios } from '../src/scenarios/load.js';
 const scenarios = loadExampleScenarios();
 
 describe('example scenarios', () => {
-  test('cover the three factors plus a position sanity check', () => {
+  test('cover the content factors plus a position sanity check', () => {
     const factors = scenarios.map((s) => s.factor).sort();
-    expect(factors).toEqual(['freshness', 'position', 'price', 'relevance']);
+    expect(factors).toEqual([
+      'freshness',
+      'position',
+      'price',
+      'relevance',
+      'specificity',
+    ]);
   });
 
   test.each(scenarios)('$id: variants are within ~5% length', (scenario) => {
