@@ -1,0 +1,16 @@
+{
+  "id": "price-northwind-pro",
+  "factor": "price",
+  "query": "Is the Northwind Pro plan a good fit for a small marketing team?",
+  "notes": "Price/spec presence vs. absence. Variant A states concrete price and specs; Variant B makes the same claims qualitatively, with no numbers. Length held close.",
+  "variantA": {
+    "id": "with-price",
+    "label": "Concrete price and specs",
+    "text": "The Northwind Pro plan suits small marketing teams. It costs $49 per month, includes 500 GB of storage, supports up to 10 seats, and offers priority email support during standard business hours."
+  },
+  "variantB": {
+    "id": "no-price",
+    "label": "No price or specs",
+    "text": "The Northwind Pro plan suits small marketing teams. It is competitively priced, includes generous storage, supports a full team, and offers priority email support during standard business hours."
+  }
+}

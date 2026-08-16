@@ -1,0 +1,16 @@
+{
+  "id": "position-canberra",
+  "factor": "position",
+  "query": "What is the capital of Australia?",
+  "notes": "Sanity check for the harness itself. Both variants are equally correct, equal-quality paraphrases with no freshness/price/relevance advantage, so a citation preference across the AB/BA swap would reveal position bias introduced by the harness rather than a content effect.",
+  "variantA": {
+    "id": "phrasing-1",
+    "label": "Equivalent answer 1",
+    "text": "The capital of Australia is Canberra. It was purpose-built as the national capital and sits between Sydney and Melbourne, hosting Parliament and most of the country's federal government institutions."
+  },
+  "variantB": {
+    "id": "phrasing-2",
+    "label": "Equivalent answer 2",
+    "text": "Australia's capital is Canberra. Chosen as a compromise between Sydney and Melbourne, it was purpose-built to host Parliament and most of the nation's central federal government institutions today."
+  }
+}

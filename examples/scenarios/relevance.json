@@ -1,0 +1,16 @@
+{
+  "id": "relevance-green-tea",
+  "factor": "relevance",
+  "query": "What are the main health benefits of drinking green tea?",
+  "notes": "Topic relevance vs. mismatch. Both variants are about green tea and similar in length, but only Variant A answers the health-benefits query; Variant B is about cultivation.",
+  "variantA": {
+    "id": "on-topic",
+    "label": "Answers the query",
+    "text": "Green tea is rich in antioxidants called catechins, which may support heart health, aid metabolism, and reduce inflammation. Regular, moderate consumption is linked to several measurable everyday wellness benefits."
+  },
+  "variantB": {
+    "id": "off-topic",
+    "label": "Topic mismatch",
+    "text": "Green tea is grown mainly in China and Japan, where the leaves are steamed soon after harvest. Careful shading and the timing of the pluck shape both the flavor and the final grade of the finished loose leaf."
+  }
+}

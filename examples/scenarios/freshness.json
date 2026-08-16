@@ -1,0 +1,16 @@
+{
+  "id": "freshness-url-params",
+  "factor": "freshness",
+  "query": "How should I handle URL parameters to avoid duplicate content in SEO?",
+  "notes": "Recent vs. stale. Body is word-for-word identical; only the review year differs (2026 vs 2019), so any preference is attributable to freshness.",
+  "variantA": {
+    "id": "recent",
+    "label": "Updated 2026",
+    "text": "Use canonical tags to point parameterized URLs back to the clean version, and configure parameter handling in your CMS to keep crawlers on the canonical form. This remains the standard guidance. Last reviewed March 2026."
+  },
+  "variantB": {
+    "id": "stale",
+    "label": "Updated 2019",
+    "text": "Use canonical tags to point parameterized URLs back to the clean version, and configure parameter handling in your CMS to keep crawlers on the canonical form. This remains the standard guidance. Last reviewed March 2019."
+  }
+}
