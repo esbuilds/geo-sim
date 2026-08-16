@@ -18,6 +18,7 @@ function make(
       out.push({
         scenarioId: 's1',
         provider,
+        model: 'test-model',
         positionOrder: 'AB',
         rawResponse: '',
         citedVariant: variant,

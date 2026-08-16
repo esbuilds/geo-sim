@@ -22,6 +22,7 @@ function trial(over: Partial<Trial>): Trial {
   return {
     scenarioId: 'sc1',
     provider: 'anthropic',
+    model: 'test-model',
     positionOrder: 'AB',
     rawResponse: 'full text <cited>1</cited>',
     citedVariant: 'A',

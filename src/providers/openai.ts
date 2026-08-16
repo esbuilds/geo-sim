@@ -4,19 +4,22 @@ import { INSTRUCTIONS, documentBlocks, queryLine } from './framing.js';
 import { parseCitation } from './parseCitation.js';
 import type { Provider } from './types.js';
 
-const DEFAULT_MODEL = 'gpt-4o';
+export const DEFAULT_MODEL = 'gpt-4o';
 
 export const openaiProvider: Provider = {
   name: 'openai',
+  defaultModel: DEFAULT_MODEL,
   async runTrial(
     scenario: Scenario,
     positionOrder: PositionOrder,
+    model?: string,
   ): Promise<Trial> {
+    const resolvedModel = model ?? DEFAULT_MODEL;
     const client = new OpenAI();
     // Same framing as Anthropic; documents injected into the system message.
     // No temperature (default is non-zero); no web_search tool.
     const completion = await client.chat.completions.create({
-      model: DEFAULT_MODEL,
+      model: resolvedModel,
       max_tokens: 1024,
       messages: [
         {
@@ -32,6 +35,7 @@ export const openaiProvider: Provider = {
     return {
       scenarioId: scenario.id,
       provider: 'openai',
+      model: resolvedModel,
       positionOrder,
       rawResponse,
       citedVariant: parseCitation(rawResponse, positionOrder),

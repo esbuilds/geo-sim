@@ -16,6 +16,7 @@ function fakeTrial(name: string, order: PositionOrder): Trial {
   return {
     scenarioId: scenario.id,
     provider: name,
+    model: 'test-model',
     positionOrder: order,
     rawResponse: '<cited>1</cited>',
     citedVariant: order === 'AB' ? 'A' : 'B',
@@ -38,6 +39,7 @@ describe('runExperiment', () => {
   test('counterbalances: trialsPerOrder each of AB and BA', async () => {
     register('fake', {
       name: 'fake',
+      defaultModel: 'test-model',
       runTrial: async (_s, order) => fakeTrial('fake', order),
     });
 
@@ -56,6 +58,7 @@ describe('runExperiment', () => {
     let calls = 0;
     register('flaky', {
       name: 'flaky',
+      defaultModel: 'test-model',
       runTrial: async (_s, order) => {
         calls += 1;
         if (calls < 3) throw { status: 429 };
@@ -77,6 +80,7 @@ describe('runExperiment', () => {
   test('records a failure after exhausting retries instead of throwing', async () => {
     register('dead', {
       name: 'dead',
+      defaultModel: 'test-model',
       runTrial: async () => {
         throw { status: 429, message: 'rate limited' };
       },
@@ -98,5 +102,51 @@ describe('runExperiment', () => {
       trialsPerOrder: 2,
     });
     expect(trials).toHaveLength(0);
+  });
+
+  test('--model override reaches the provider and is recorded on each trial', async () => {
+    const seen: (string | undefined)[] = [];
+    providers.recorder = {
+      name: 'recorder',
+      defaultModel: 'default-model',
+      runTrial: async (_s, order, model) => {
+        seen.push(model);
+        return { ...fakeTrial('recorder', order), model: model ?? 'default-model' };
+      },
+    };
+
+    const overridden = await runExperiment(scenario, {
+      providers: ['recorder'],
+      trialsPerOrder: 1,
+      model: 'override-model',
+    });
+    expect(seen).toEqual(['override-model', 'override-model']);
+    expect(overridden.every((t) => t.model === 'override-model')).toBe(true);
+
+    seen.length = 0;
+    const defaulted = await runExperiment(scenario, {
+      providers: ['recorder'],
+      trialsPerOrder: 1,
+    });
+    expect(seen).toEqual([undefined, undefined]);
+    expect(defaulted.every((t) => t.model === 'default-model')).toBe(true);
+  });
+
+  test('errored trials still record the model that was attempted', async () => {
+    providers.deadmodel = {
+      name: 'deadmodel',
+      defaultModel: 'default-model',
+      runTrial: async () => {
+        throw new Error('boom');
+      },
+    };
+
+    const trials = await runExperiment(scenario, {
+      providers: ['deadmodel'],
+      trialsPerOrder: 1,
+      retryBaseMs: 1,
+      model: 'override-model',
+    });
+    expect(trials.every((t) => t.model === 'override-model')).toBe(true);
   });
 });

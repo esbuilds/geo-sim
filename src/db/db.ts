@@ -33,6 +33,7 @@ function migrate(db: DB): void {
       id TEXT PRIMARY KEY,
       run_id TEXT NOT NULL REFERENCES runs(id),
       provider TEXT NOT NULL,
+      model TEXT,
       position_order TEXT NOT NULL,
       raw_response TEXT NOT NULL,
       cited_variant TEXT NOT NULL,
@@ -42,6 +43,19 @@ function migrate(db: DB): void {
     CREATE INDEX IF NOT EXISTS idx_trials_run ON trials(run_id);
     CREATE INDEX IF NOT EXISTS idx_runs_scenario ON runs(scenario_id);
   `);
+  addTrialsModelColumn(db);
+}
+
+/** Adds trials.model to databases created before the column existed. Rows written
+ * then stay NULL — their model is genuinely unknown, so reports say so rather
+ * than backfilling a guess. */
+function addTrialsModelColumn(db: DB): void {
+  const columns = db.prepare('PRAGMA table_info(trials)').all() as {
+    name: string;
+  }[];
+  if (!columns.some((c) => c.name === 'model')) {
+    db.exec('ALTER TABLE trials ADD COLUMN model TEXT');
+  }
 }
 
 /** Insert or update a scenario by its id. Variants are stored as JSON. */
@@ -89,12 +103,13 @@ export function createRun(
 export function insertTrial(db: DB, runId: string, trial: Trial): void {
   db.prepare(
     `INSERT INTO trials
-       (id, run_id, provider, position_order, raw_response, cited_variant, error, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+       (id, run_id, provider, model, position_order, raw_response, cited_variant, error, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     randomUUID(),
     runId,
     trial.provider,
+    trial.model,
     trial.positionOrder,
     trial.rawResponse,
     trial.citedVariant,

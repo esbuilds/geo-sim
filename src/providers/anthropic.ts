@@ -4,18 +4,23 @@ import { INSTRUCTIONS, documentBlocks, queryLine } from './framing.js';
 import { parseCitation } from './parseCitation.js';
 import type { Provider } from './types.js';
 
-// ponytail: model is a constant, not config — swap the string when v1 needs it.
-const DEFAULT_MODEL = 'claude-opus-4-8';
+// Default when --model is not passed. Overridable per run because citation
+// preference is model-specific: the model under test is a study-design choice,
+// and cheap models are the right place to validate the harness itself.
+export const DEFAULT_MODEL = 'claude-opus-4-8';
 
 export const anthropicProvider: Provider = {
   name: 'anthropic',
+  defaultModel: DEFAULT_MODEL,
   async runTrial(
     scenario: Scenario,
     positionOrder: PositionOrder,
+    model?: string,
   ): Promise<Trial> {
+    const resolvedModel = model ?? DEFAULT_MODEL;
     const client = new Anthropic();
     const message = await client.messages.create({
-      model: DEFAULT_MODEL,
+      model: resolvedModel,
       max_tokens: 1024,
       // No temperature (Opus 4.x rejects it; default sampling is what we want —
       // repeated trials capture the model's own variance). No tools, no web search.
@@ -36,6 +41,7 @@ export const anthropicProvider: Provider = {
     return {
       scenarioId: scenario.id,
       provider: 'anthropic',
+      model: resolvedModel,
       positionOrder,
       rawResponse,
       citedVariant: parseCitation(rawResponse, positionOrder),

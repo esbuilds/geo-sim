@@ -6,6 +6,7 @@ import { createRun, insertTrial, openDb, upsertScenario } from '../db/db.js';
 import { getScenarioForRun, getTrialsForRun } from '../db/queries.js';
 import { runExperiment } from '../harness/run.js';
 import { renderMarkdown } from '../report/markdown.js';
+import { providers as providers_ } from '../providers/registry.js';
 import { loadExampleScenarios, loadScenario } from '../scenarios/load.js';
 import { analyze, type AnalysisResult } from '../stats/analyze.js';
 
@@ -76,8 +77,17 @@ export function buildProgram(): Command {
       'comma-separated: anthropic,openai,google',
     )
     .option('--trials <n>', 'trials per position order', '5')
+    .option(
+      '--model <id>',
+      "model id override, applied to every provider in the run (default: each provider's own)",
+    )
     .action(
-      async (opts: { scenario: string; providers: string; trials: string }) => {
+      async (opts: {
+        scenario: string;
+        providers: string;
+        trials: string;
+        model?: string;
+      }) => {
         const providers = resolveProviders(
           parseProviders(opts.providers),
           process.env,
@@ -88,11 +98,17 @@ export function buildProgram(): Command {
         const db = openDb();
         upsertScenario(db, scenario);
         const runId = createRun(db, scenario.id, providers, trialsPerOrder);
-        console.log(`run ${runId} — ${scenario.id} (${providers.join(', ')})`);
+        const modelNote = opts.model
+          ? opts.model
+          : providers.map((p) => providers_[p]?.defaultModel ?? '?').join(', ');
+        console.log(
+          `run ${runId} — ${scenario.id} (${providers.join(', ')}) — model ${modelNote}`,
+        );
 
         const trials = await runExperiment(scenario, {
           providers,
           trialsPerOrder,
+          ...(opts.model !== undefined ? { model: opts.model } : {}),
           onTrial: (t) => insertTrial(db, runId, t),
         });
         db.close();

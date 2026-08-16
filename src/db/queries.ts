@@ -8,6 +8,8 @@ import type { DB } from './db.js';
 
 interface TrialRow {
   provider: string;
+  /** NULL for trials written before the model column existed. */
+  model: string | null;
   position_order: string;
   raw_response: string;
   cited_variant: string;
@@ -20,6 +22,7 @@ function rowToTrial(row: TrialRow, scenarioId: string): Trial {
   return {
     scenarioId,
     provider: row.provider,
+    model: row.model ?? 'unknown',
     positionOrder: row.position_order as PositionOrder,
     rawResponse: row.raw_response,
     citedVariant: row.cited_variant as CitedVariant,

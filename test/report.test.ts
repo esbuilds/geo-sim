@@ -19,6 +19,7 @@ function trials(A: number, B: number): Trial[] {
     out.push({
       scenarioId: scenario.id,
       provider: 'anthropic',
+      model: 'test-model',
       positionOrder: 'AB',
       rawResponse: '',
       citedVariant: 'A',
@@ -28,6 +29,7 @@ function trials(A: number, B: number): Trial[] {
     out.push({
       scenarioId: scenario.id,
       provider: 'anthropic',
+      model: 'test-model',
       positionOrder: 'AB',
       rawResponse: '',
       citedVariant: 'B',

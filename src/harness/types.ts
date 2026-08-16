@@ -26,6 +26,13 @@ export type CitedVariant = 'A' | 'B' | 'both' | 'neither';
 export interface Trial {
   scenarioId: string;
   provider: string;
+  /**
+   * The exact model id that produced this trial. Recorded per-trial, not
+   * per-run: citation preference and position bias are properties of a
+   * specific model, so trials from different models are not poolable and a
+   * run without this is uninterpretable once --model is in use.
+   */
+  model: string;
   positionOrder: PositionOrder;
   /** Full raw response text, preserved for later validation studies. */
   rawResponse: string;

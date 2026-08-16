@@ -24,9 +24,11 @@ describe('end-to-end: run -> persist -> read -> analyze -> report', () => {
     // A fake provider that always cites variant A — no network, real everything else.
     providers.fake = {
       name: 'fake',
+      defaultModel: 'test-model',
       runTrial: async (s, positionOrder) => ({
         scenarioId: s.id,
         provider: 'fake',
+        model: 'test-model',
         positionOrder,
         rawResponse: '<cited>1</cited>',
         citedVariant: positionOrder === 'AB' ? 'A' : 'B', // doc 1 == A under AB, B under BA

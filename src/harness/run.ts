@@ -7,6 +7,8 @@ export interface RunOptions {
   providers: string[];
   /** Trials to run per position order. Total per provider = 2 × this. */
   trialsPerOrder: number;
+  /** Model id override applied to every provider in this run. Omit to use each provider's default. */
+  model?: string;
   /** Max in-flight requests per provider. */
   concurrencyPerProvider?: number;
   /** Base backoff in ms for 429 retries (1s, 2s, 4s, ...). Lower it in tests. */
@@ -31,10 +33,11 @@ async function runTrialWithRetry(
   scenario: Scenario,
   order: PositionOrder,
   retryBaseMs: number,
+  model: string | undefined,
 ): Promise<Trial> {
   for (let attempt = 1; ; attempt++) {
     try {
-      return await provider.runTrial(scenario, order);
+      return await provider.runTrial(scenario, order, model);
     } catch (err) {
       if (isRateLimit(err) && attempt < MAX_ATTEMPTS) {
         const backoff = retryBaseMs * 2 ** (attempt - 1);
@@ -44,6 +47,7 @@ async function runTrialWithRetry(
       return {
         scenarioId: scenario.id,
         provider: provider.name,
+        model: model ?? provider.defaultModel,
         positionOrder: order,
         rawResponse: '',
         citedVariant: 'neither',
@@ -81,6 +85,7 @@ export async function runExperiment(
   const {
     providers: names,
     trialsPerOrder,
+    model,
     concurrencyPerProvider = 4,
     retryBaseMs = 1000,
     onTrial,
@@ -110,6 +115,7 @@ export async function runExperiment(
           scenario,
           order,
           retryBaseMs,
+          model,
         );
         onTrial?.(trial);
         done += 1;
