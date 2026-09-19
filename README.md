@@ -17,7 +17,42 @@ Every result is a statement about which variant a model prefers to cite inside a
 sandbox where both are already available. Treat it as content-quality signal, not
 as evidence about ranking or retrieval.
 
-**Status:** early WIP.
+## Results so far
+
+Two scenarios have been run at volume. Raw trials are in `geo-sim.sqlite`.
+
+**1. Concrete detail beat generic benefit copy, 120 trials to 0.**
+`examples/scenarios/specificity.json`, claude-opus-4-8, query: *"I'm looking for
+skin tightening at a med spa in Irvine. What does this clinic offer and what
+should I expect?"* Two ~120-word descriptions of the same fictional clinic and
+the same services. One is the generic benefit copy that real med spa pages in
+the area actually publish ("advanced technology," "personalized treatment
+plans"). The other names the devices (Sofwave, Morpheus8, Thermage FLX), the
+nurse practitioner, session counts, and prices. The specific variant was cited
+in 120 of 120 trials, 60 in each presentation order. Unanimous and
+order-invariant.
+
+**2. One model cited whatever came first, in a scenario where nothing should
+have won.** `examples/scenarios/position.json` is a null control: two equally
+correct, equal-length paraphrases of "the capital of Australia is Canberra."
+There is no content effect available to find. claude-sonnet-5 cited the
+first-listed document in 59 of 60 trials. claude-opus-4-8 did not do this; it
+preferred one phrasing 30 of 40 times regardless of where it sat.
+
+The second result is the reason the first one is worth anything. Any citation
+test that does not counterbalance document order can produce a confident,
+reproducible, entirely fake finding on at least one current frontier model. The
+harness swaps AB/BA by construction for this reason.
+
+### What these results do not establish
+
+Single model family, two scenarios, one fictional business. The specificity
+result is a statement about citation preference given retrieval, not about
+whether a page gets retrieved in the first place, and not a general law of AI
+search. It is a reason to test your own copy, not a checklist item to ship.
+
+**Status:** early WIP. The scenarios above are run; freshness, price, and
+relevance are scaffolded but under-sampled.
 
 ## Quickstart
 
