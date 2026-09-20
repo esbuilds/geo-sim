@@ -1,0 +1,16 @@
+{
+  "id": "position-canberra-queryflip",
+  "factor": "position",
+  "query": "What is Australia's capital?",
+  "notes": "Query-alignment replication on the original position-canberra pair. Both documents and their A/B labels are byte-identical to that scenario; only the query is rephrased from \"What is the capital of Australia?\" to mirror variantB's opening (\"Australia's capital is Canberra\") instead of variantA's (\"The capital of Australia is Canberra\"). Under the original query, opus-4-8 cited A 80/80 in AB order and 46/80 in BA order, which looked like an asymmetric position artifact. If the winner flips to B here, that anomaly is better explained as a query-alignment content preference for A cancelling against slot preference in the BA arm, and the alignment effect replicates on a second topic.",
+  "variantA": {
+    "id": "phrasing-1",
+    "label": "Equivalent answer 1",
+    "text": "The capital of Australia is Canberra. It was purpose-built as the national capital and sits between Sydney and Melbourne, hosting Parliament and most of the country's federal government institutions."
+  },
+  "variantB": {
+    "id": "phrasing-2",
+    "label": "Equivalent answer 2",
+    "text": "Australia's capital is Canberra. Chosen as a compromise between Sydney and Melbourne, it was purpose-built to host Parliament and most of the nation's central federal government institutions today."
+  }
+}

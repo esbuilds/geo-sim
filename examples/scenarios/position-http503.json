@@ -1,0 +1,16 @@
+{
+  "id": "position-http503",
+  "factor": "position",
+  "query": "What does the HTTP 503 status code mean?",
+  "notes": "Second independent null pair, built to test whether the AB/BA asymmetry seen in position-canberra is specific to those paraphrases. Different domain (technical rather than geographic), different query form (\"what does X mean\" rather than \"what is X\"), different variant labels and ids, matched length. Both variants are equally correct with no freshness, price, or relevance advantage, so any citation preference surviving the order swap is a harness artifact rather than a content effect.",
+  "variantA": {
+    "id": "wording-alpha",
+    "label": "Equivalent definition alpha",
+    "text": "HTTP 503 means Service Unavailable. The server is temporarily unable to handle the request, usually because it is overloaded or down for maintenance, and clients should retry after a short delay."
+  },
+  "variantB": {
+    "id": "wording-beta",
+    "label": "Equivalent definition beta",
+    "text": "A 503 status code signals Service Unavailable. The server cannot currently process the request, typically due to overload or planned maintenance, so clients are expected to try again shortly."
+  }
+}

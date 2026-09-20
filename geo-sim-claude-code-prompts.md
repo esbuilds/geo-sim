@@ -1,6 +1,6 @@
 # geo-sim — Claude Code Build Sequence
 
-A controlled RAG-injection harness that feeds two content variants to an LLM as context for the same query and records which one gets cited. Tests citation preference *given retrieval* — not whether either variant gets retrieved in the first place. That distinction should survive every phase below; it's the thing most likely to get flattened into an overclaim once this is public.
+A controlled RAG-injection harness that feeds two content variants to an LLM as context for the same query and records which one gets cited. Tests citation preference _given retrieval_ — not whether either variant gets retrieved in the first place. That distinction should survive every phase below; it's the thing most likely to get flattened into an overclaim once this is public.
 
 ## How to use this
 
@@ -24,6 +24,7 @@ So Claude Code doesn't relitigate these every session, or drift toward different
 ## Sequence at a glance
 
 **Core (do these in order):**
+
 1. Repo scaffold + `CLAUDE.md`
 2. Core types + first working provider call (Anthropic)
 3. Provider abstraction — add OpenAI + Gemini
@@ -35,15 +36,13 @@ So Claude Code doesn't relitigate these every session, or drift toward different
 9. Markdown report with the disclaimer baked in
 10. README + OSS hygiene
 
-**Stretch (only once the above feels solid):**
-11. Publish to npm
-12. Web dashboard
+**Stretch (only once the above feels solid):** 11. Publish to npm 12. Web dashboard
 
 ---
 
 ## Prompt 1 — Repo scaffold + CLAUDE.md
 
-*Why:* Gets the skeleton and the persistent-memory file in place before any real logic exists, so every later session — especially ones that start fresh — inherits the same context instead of guessing.
+_Why:_ Gets the skeleton and the persistent-memory file in place before any real logic exists, so every later session — especially ones that start fresh — inherits the same context instead of guessing.
 
 ```
 Set up a new TypeScript/Node project called geo-sim (placeholder name, fine to keep for now). Use pnpm, strict TypeScript, eslint + prettier, and vitest for testing. Add an MIT license and a sensible .gitignore.
@@ -76,7 +75,7 @@ Create .env.example with OPENAI_API_KEY, ANTHROPIC_API_KEY, and GOOGLE_API_KEY a
 
 ## Prompt 2 — Core types + first working provider (Anthropic)
 
-*Why:* Get one real, live-API-tested path working end to end before generalizing to three providers. Easier to debug one integration than three at once.
+_Why:_ Get one real, live-API-tested path working end to end before generalizing to three providers. Easier to debug one integration than three at once.
 
 ```
 Define the core types in src/harness/types.ts:
@@ -104,7 +103,7 @@ Write a small manual script (scripts/manual-test-anthropic.ts, excluded from the
 
 ## Prompt 3 — Provider abstraction: add OpenAI + Gemini
 
-*Why:* Same interface across all three providers means the harness, stats, and CLI never need to know which model they're talking to.
+_Why:_ Same interface across all three providers means the harness, stats, and CLI never need to know which model they're talking to.
 
 ```
 Extract a shared interface in src/providers/types.ts:
@@ -135,7 +134,7 @@ Write unit tests for the OpenAI and Google implementations mirroring the Anthrop
 
 ## Prompt 4 — Harness runner: repeated trials + position counterbalancing
 
-*Why:* This is the actual experiment. Single trials tell you nothing — you need repetition to see the model's real variance, and order-swapping to make sure you're not just measuring "the model prefers whichever document comes first."
+_Why:_ This is the actual experiment. Single trials tell you nothing — you need repetition to see the model's real variance, and order-swapping to make sure you're not just measuring "the model prefers whichever document comes first."
 
 ```
 Build src/harness/run.ts with:
@@ -157,7 +156,7 @@ For now, only actually run this against whichever provider I have a key configur
 
 ## Prompt 5 — Statistics layer
 
-*Why:* Raw trial counts don't tell you if a result is real or noise. This is the layer that turns "B won 7 of 10 times" into something you can actually stand behind.
+_Why:_ Raw trial counts don't tell you if a result is real or noise. This is the layer that turns "B won 7 of 10 times" into something you can actually stand behind.
 
 ```
 Build src/stats/analyze.ts with:
@@ -180,7 +179,7 @@ Write unit tests with synthetic trial arrays covering: unanimous strong preferen
 
 ## Prompt 6 — Scenario generators for the four gatekeeper factors
 
-*Why:* Vishwakarma et al. found four factors with strong, unanimous effects across all six models tested — topic relevance, price/spec presence, timestamp freshness, and source position. Those are the highest-confidence place to start; the "differentiator" tier (hedged language, comparisons, evidence) was noisier and model-dependent, so it's worth building on top of a working foundation rather than leading with it.
+_Why:_ Vishwakarma et al. found four factors with strong, unanimous effects across all six models tested — topic relevance, price/spec presence, timestamp freshness, and source position. Those are the highest-confidence place to start; the "differentiator" tier (hedged language, comparisons, evidence) was noisier and model-dependent, so it's worth building on top of a working foundation rather than leading with it.
 
 ```
 Build example scenarios in examples/scenarios/ for three of the four gatekeeper factors — topic relevance/mismatch, price-or-spec presence vs. absence, and timestamp freshness (recent vs. stale). The fourth factor, position, is already handled by the harness's AB/BA swap — for that one, just write a scenario where position is the only thing that could plausibly matter, as a sanity check that the harness itself isn't introducing its own bias.
@@ -200,7 +199,7 @@ Hand-author these rather than generating them programmatically — more trustwor
 
 ## Prompt 7 — SQLite persistence
 
-*Why:* Every trial's raw response is the raw material for a future validation study (does sandbox citation preference actually predict real-world citation shift?) — that data is worthless if it isn't saved in full.
+_Why:_ Every trial's raw response is the raw material for a future validation study (does sandbox citation preference actually predict real-world citation shift?) — that data is worthless if it isn't saved in full.
 
 ```
 Add a persistence layer in src/db/ using better-sqlite3.
@@ -221,7 +220,7 @@ Add src/db/queries.ts with helpers to fetch all trials for a run, and all runs f
 
 ## Prompt 8 — CLI
 
-*Why:* Turns the library into something usable without writing a script every time — and the thing you'll actually want other people to try if this goes public.
+_Why:_ Turns the library into something usable without writing a script every time — and the thing you'll actually want other people to try if this goes public.
 
 ```
 Build a CLI in src/cli/index.ts using commander, exposed as a geo-sim bin in package.json.
@@ -240,7 +239,7 @@ Load API keys from .env. If a requested provider's key is missing, fail with a c
 
 ## Prompt 9 — Markdown report with the disclaimer baked in
 
-*Why:* This is where the "content quality given retrieval, not a retrieval predictor" framing either survives or gets lost. It needs to live in the artifact itself, not just the README.
+_Why:_ This is where the "content quality given retrieval, not a retrieval predictor" framing either survives or gets lost. It needs to live in the artifact itself, not just the README.
 
 ```
 Build src/report/markdown.ts: a function that takes an AnalysisResult plus scenario metadata and produces a markdown report string with:
@@ -258,7 +257,7 @@ Wire this into geo-sim report --format md (default stays the terminal output fro
 
 ## Prompt 10 — README + OSS hygiene
 
-*Why:* The difference between a repo you built for yourself and one someone else can actually pick up.
+_Why:_ The difference between a repo you built for yourself and one someone else can actually pick up.
 
 ```
 Replace the placeholder README with the real one. Include:
@@ -278,13 +277,13 @@ Add CONTRIBUTING.md and two issue templates: bug report, propose a new scenario.
 
 ---
 
-## Prompt 11 — Publish to npm *(stretch)*
+## Prompt 11 — Publish to npm _(stretch)_
 
 ```
 Prepare package.json for publishing: files field limited to dist/ and examples/, a bin entry pointing at the built CLI, and an exports map so the harness and stats pieces are importable separately from the CLI. Set up a build step (tsup or tsc) producing dist/. Run npm publish --dry-run and show me the file list before we publish for real.
 ```
 
-## Prompt 12 — Web dashboard *(stretch — don't start until the CLI feels trustworthy)*
+## Prompt 12 — Web dashboard _(stretch — don't start until the CLI feels trustworthy)_
 
 ```
 Scaffold a separate Next.js app (own folder or separate repo, your call) that reads from the SQLite file — or a hosted Postgres/Supabase if this needs to be multi-user — and shows historical runs: a list view, drill-in to a run's per-provider results, and a simple trend view once a scenario has more than one run. Keep the visual style as plain as Schema Watch rather than over-designing it.
@@ -294,4 +293,4 @@ Scaffold a separate Next.js app (own folder or separate repo, your call) that re
 
 ## One more time, because it's worth repeating
 
-The result of any of this is a statement about citation preference *inside a sandbox where both variants are already in the model's context*. It is not evidence about whether either variant gets retrieved by a real search or answer engine. Every prompt above tries to keep that line intact in the code and the docs — worth checking it hasn't quietly disappeared by the time Prompt 10 ships.
+The result of any of this is a statement about citation preference _inside a sandbox where both variants are already in the model's context_. It is not evidence about whether either variant gets retrieved by a real search or answer engine. Every prompt above tries to keep that line intact in the code and the docs — worth checking it hasn't quietly disappeared by the time Prompt 10 ships.

@@ -1,0 +1,16 @@
+{
+  "id": "position-http503-swapped",
+  "factor": "position",
+  "query": "What does the HTTP 503 status code mean?",
+  "notes": "Label-swap control for position-http503, which cited variant A in 120/120 trials across both orders. The two texts are identical to that scenario but their A/B assignment is reversed: the text that was variantB is now variantA. If the same TEXT wins under its new label, the preference is a real content effect. If variant A wins again, the harness has a variant-labeling or response-parsing bug and prior results do not survive until it is fixed.",
+  "variantA": {
+    "id": "wording-beta",
+    "label": "Equivalent definition beta",
+    "text": "A 503 status code signals Service Unavailable. The server cannot currently process the request, typically due to overload or planned maintenance, so clients are expected to try again shortly."
+  },
+  "variantB": {
+    "id": "wording-alpha",
+    "label": "Equivalent definition alpha",
+    "text": "HTTP 503 means Service Unavailable. The server is temporarily unable to handle the request, usually because it is overloaded or down for maintenance, and clients should retry after a short delay."
+  }
+}

@@ -22,9 +22,9 @@ as evidence about ranking or retrieval.
 Two scenarios have been run at volume. Raw trials are in `geo-sim.sqlite`.
 
 **1. Concrete detail beat generic benefit copy, 120 trials to 0.**
-`examples/scenarios/specificity.json`, claude-opus-4-8, query: *"I'm looking for
+`examples/scenarios/specificity.json`, claude-opus-4-8, query: _"I'm looking for
 skin tightening at a med spa in Irvine. What does this clinic offer and what
-should I expect?"* Two ~120-word descriptions of the same fictional clinic and
+should I expect?"_ Two ~120-word descriptions of the same fictional clinic and
 the same services. One is the generic benefit copy that real med spa pages in
 the area actually publish ("advanced technology," "personalized treatment
 plans"). The other names the devices (Sofwave, Morpheus8, Thermage FLX), the

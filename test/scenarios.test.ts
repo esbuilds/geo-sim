@@ -5,7 +5,7 @@ const scenarios = loadExampleScenarios();
 
 describe('example scenarios', () => {
   test('cover the content factors plus a position sanity check', () => {
-    const factors = scenarios.map((s) => s.factor).sort();
+    const factors = [...new Set(scenarios.map((s) => s.factor))].sort();
     expect(factors).toEqual([
       'freshness',
       'position',

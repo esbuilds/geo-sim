@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, test } from 'vitest';
-import { createRun, insertTrial, openDb, upsertScenario } from '../src/db/db.js';
+import {
+  createRun,
+  insertTrial,
+  openDb,
+  upsertScenario,
+} from '../src/db/db.js';
 import { getScenarioForRun, getTrialsForRun } from '../src/db/queries.js';
 import { runExperiment } from '../src/harness/run.js';
 import { providers } from '../src/providers/registry.js';

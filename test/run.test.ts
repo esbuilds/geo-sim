@@ -111,7 +111,10 @@ describe('runExperiment', () => {
       defaultModel: 'default-model',
       runTrial: async (_s, order, model) => {
         seen.push(model);
-        return { ...fakeTrial('recorder', order), model: model ?? 'default-model' };
+        return {
+          ...fakeTrial('recorder', order),
+          model: model ?? 'default-model',
+        };
       },
     };
 

@@ -70,7 +70,7 @@ the change.
   paid trials as indecisive (2026-08-16). `neither` stays as a real no-signal
   option. `parseCitation` still accepts a `both` tag so older runs stay readable
   and an unprompted `both` isn't silently miscounted.
-- This narrows the construct to *relative* preference between two sources. It
+- This narrows the construct to _relative_ preference between two sources. It
   does not measure whether a single document is independently sufficient, and it
   does not touch retrieval (see section 2).
 - **Every analysis reports by variant AND by position slot.** The variant

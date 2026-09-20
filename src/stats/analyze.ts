@@ -104,7 +104,10 @@ function binomialTwoSidedP(x: number, n: number): number {
 }
 
 /** True when the cited variant occupied document slot 1 for this trial's order. */
-function citedFirstSlot(order: Trial['positionOrder'], cited: 'A' | 'B'): boolean {
+function citedFirstSlot(
+  order: Trial['positionOrder'],
+  cited: 'A' | 'B',
+): boolean {
   return order === 'AB' ? cited === 'A' : cited === 'B';
 }
 

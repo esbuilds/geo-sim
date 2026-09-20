@@ -1,0 +1,16 @@
+{
+  "id": "position-http503-queryflip",
+  "factor": "position",
+  "query": "What does a 503 status code signal?",
+  "notes": "Query-alignment test. The two documents are byte-identical to position-http503 and keep the same A/B labels, but the query is rephrased to mirror variantB's opening (\"A 503 status code signals...\") instead of variantA's (\"HTTP 503 means...\"). In position-http503 and its label-swapped control, the alpha text won 150/150 under a query that mirrored it. If the winner flips to B here, citation choice is tracking lexical alignment between the query and the document's phrasing. If A wins again, alignment is not the mechanism and the alpha text is preferred for some other reason.",
+  "variantA": {
+    "id": "wording-alpha",
+    "label": "Equivalent definition alpha",
+    "text": "HTTP 503 means Service Unavailable. The server is temporarily unable to handle the request, usually because it is overloaded or down for maintenance, and clients should retry after a short delay."
+  },
+  "variantB": {
+    "id": "wording-beta",
+    "label": "Equivalent definition beta",
+    "text": "A 503 status code signals Service Unavailable. The server cannot currently process the request, typically due to overload or planned maintenance, so clients are expected to try again shortly."
+  }
+}
